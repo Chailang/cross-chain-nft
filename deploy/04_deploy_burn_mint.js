@@ -1,4 +1,5 @@
 const { getNamedAccounts } = require("hardhat");
+const {developmentChains,networkConfig} = require("../helper-hardhat-config");
 
 module.exports = async ({getNamedAccounts, deployments}) => {
   const {deploy,log} = deployments;
@@ -6,26 +7,24 @@ module.exports = async ({getNamedAccounts, deployments}) => {
 
   log("Deploying the NFTPoolBurnAndMint contract")
 
-
     //address _router, address _link,address _nft
-
-  const ccipLocalSimulatorDeloyment = await deployments.get("CCIPLocalSimulator");
-  const ccipLocalSimulator = await ethers.getContractAt("CCIPLocalSimulator", ccipLocalSimulatorDeloyment.address);
-  const config = await ccipLocalSimulator.configuration();
-  const destinationRouter = config.destinationRouter_;
-  const linkToken = config.linkToken_;
   const wnftDeployment = await deployments.get("WrappedMyToken");
   const wnftAddress = wnftDeployment.address;
+  let destinationRouter;
+  let linkToken;
+  if (!developmentChains.includes(network.name)) { //测试网
+    destinationRouter = networkConfig[network.config.chainId].router;
+    linkToken = networkConfig[network.config.chainId].linkToken;
+  }else{ //本地
+    const ccipLocalSimulatorDeloyment = await deployments.get("CCIPLocalSimulator");
+    const ccipLocalSimulator = await ethers.getContractAt("CCIPLocalSimulator", ccipLocalSimulatorDeloyment.address);
+    const config = await ccipLocalSimulator.configuration();
+    destinationRouter = config.destinationRouter_;
+    linkToken = config.linkToken_;
+  }
 
 
 
-    //  * @return chainSelector_ - The unique CCIP Chain Selector.
-    //  * @return sourceRouter_  - The source chain Router contract.
-    //  * @return destinationRouter_ - The destination chain Router contract.
-    //  * @return wrappedNative_ - The wrapped native token which can be used for CCIP fees.
-    //  * @return linkToken_ - The LINK token.
-    //  * @return ccipBnM_ - The ccipBnM token.
-    //  * @return ccipLnM_ - The ccipLnM token.
 
   await deploy('NFTPoolBurnAndMint', {
     from: firstAccount,
@@ -36,5 +35,5 @@ module.exports = async ({getNamedAccounts, deployments}) => {
   log("NFTPoolBurnAndMint is deployed!")
 
 };
-module.exports.tags = ["all","NFTPoolBurnAndMint"];
-module.exports.dependencies = ["CCIPLocalSimulator"]; // this ensure the Token script above is executed first, so `deployments.get('Token')` succeeds
+module.exports.tags = ["all","destinationchain"];
+// module.exports.dependencies = ["CCIPLocalSimulator"]; // this ensure the Token script above is executed first, so `deployments.get('Token')` succeeds

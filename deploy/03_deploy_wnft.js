@@ -15,4 +15,4 @@ module.exports = async ({getNamedAccounts, deployments}) => {
   log("WrappedMyToken is deployed!")
 
 };
-module.exports.tags = ["all","WrappedMyToken"];
+module.exports.tags = ["all","destinationchain"];

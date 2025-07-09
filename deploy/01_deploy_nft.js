@@ -1,5 +1,4 @@
-const {sourceChainTag, destChainTag, developmentChains} =  require( "../helper-hardhat-config");
-
+const { getNamedAccounts } = require("hardhat");
 module.exports = async ({getNamedAccounts, deployments}) => {
   const {deploy,log} = deployments;
   const {firstAccount} = await getNamedAccounts();
@@ -14,4 +13,4 @@ module.exports = async ({getNamedAccounts, deployments}) => {
   log("MyToken is deployed!")
 
 };
-module.exports.tags = ["MyToken","all"];
+module.exports.tags = ["sourcechain","all"];
