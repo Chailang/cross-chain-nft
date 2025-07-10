@@ -2,6 +2,8 @@ require("@nomicfoundation/hardhat-toolbox");
 require('hardhat-deploy');
 require('hardhat-deploy-ethers');
 require("@chainlink/env-enc").config();
+require("./task")
+
 PRIVATE_KEY = process.env.PRIVATE_KEY;
 SEPOLIA_URL = process.env.SEPOLIA_URL;
 ALCHEMY_URL = process.env.ALCHEMY_URL;
